@@ -8,7 +8,6 @@
 
 ## Usage
 
-
 ### Load file card into the database
 
 In this first step we record in database only the possible route from the map
@@ -31,9 +30,17 @@ In this first step we record in database only the possible route from the map
 * Enter in your shell (`make shell`) and consume message sent before : `bin/console messenger:consume gps_coordinates -vvv`
 * Each gps coordinates are loaded into the pgsql database.
 * To connect on the database with adminer :
-    * url : http://localhost:8080
-    * credentials : postgres - user - password - adventurer
-    
+  * url : http://localhost:8080
+  * credentials : postgres - user - password - adventurer
+
+### Playing game
+
+Enter in your shell (`make shell`) and launch the command : `bin/console app:play-game [INITIAL_COORDINATES] [MOVING_SEQUENCE] -vvv`
+You have three behaviours :
+* The initial coordinates do not exist
+* The initial coordinates exist but the adventurer can not move
+* The initial coordinates exist and the adventurer can move
+
 ## Use development environment :computer:
 
 You only need `make`, `docker` and `docker-compose` installed to start the development environment.
