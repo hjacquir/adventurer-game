@@ -7,6 +7,10 @@ framework:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
             failed: '%env(MESSENGER_TRANSPORT_DSN_FAILURE)%'
             # sync: 'sync://'
+            latitude_line: '%env(MESSENGER_TRANSPORT_DSN_LATITUDE_LINE)%'
+            gps_coordinates: '%env(MESSENGER_TRANSPORT_DSN_GPS_COORDINATES)%'
 
         routing:
             # Route your messages to the transports
+            'App\Domain\LatitudeLine': latitude_line
+            'App\Domain\Model\GpsCoordinates': gps_coordinates

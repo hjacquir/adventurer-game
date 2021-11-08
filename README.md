@@ -8,6 +8,32 @@
 
 ## Usage
 
+
+### Load file card into the database
+
+In this first step we record in database only the possible route from the map
+
+#### Extract Latitude Line from Card file
+
+* Enter in your shell (`make shell`) and launch the command : `bin/console app:extract-latitude card.txt` with the card file path
+  to verbose all log message add the options : `-vvv` like `bin/console app:extract-latitude card.txt -vvv`
+* The file is parsed line by line and each line is sent to RMQ queue : `latitude_line`
+* Connect to RMQ : http://localhost:15672/ with guest/guest
+
+#### Transform Latitude Line to Gps Coordinates
+
+* Enter in your shell (`make shell`) and consume message sent before : `bin/console messenger:consume latitude_line -vvv`
+* Each latitude line is mapped to a gps coordinate with latitude and longitude.
+  The gps coordinate is sent to RMQ queue : `gps_coordinates`
+
+#### Load Gps Coordinates into Database
+
+* Enter in your shell (`make shell`) and consume message sent before : `bin/console messenger:consume gps_coordinates -vvv`
+* Each gps coordinates are loaded into the pgsql database.
+* To connect on the database with adminer :
+    * url : http://localhost:8080
+    * credentials : postgres - user - password - adventurer
+    
 ## Use development environment :computer:
 
 You only need `make`, `docker` and `docker-compose` installed to start the development environment.
