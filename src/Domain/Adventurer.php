@@ -20,7 +20,7 @@ class Adventurer
     {
         $this->card = $card;
         $this->initialCoordinates = $initialCoordinates;
-        // we consider that on init initial and final coordinates are same
+        // we consider that on init : initial and final coordinates are same
         $this->finalCoordinates = $initialCoordinates;
     }
 

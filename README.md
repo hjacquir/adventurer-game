@@ -1,6 +1,36 @@
 # Game : the adventurer
 
-## Requirements
+## Description
+
+* An adventurer was venturing into a dangerous world, 
+making its way through the dark woods.
+
+## Use case
+
+* It is about modeling the 
+movements of an adventurer on a map.
+* The map is modeled using characters in 
+a text file in UTF-8 format.
+
+Example 
+```
+###    ######    ###
+###      ##      ###
+##     ##  ##     ##
+#      ##  ##      #
+##                ##
+
+Legend :
+# impenetrable wood
+[] (space character): box where the adventurer can move
+```
+
+Requirements :
+
+* The adventurer cannot go beyond the edges of the map.
+* The adventurer cannot go to spaces occupied by impenetrable woods.
+
+## Stack requirements
 
 * PHP > 7.4
 * Docker installed
@@ -40,6 +70,7 @@ You have three behaviours :
 * The initial coordinates do not exist
 * The initial coordinates exist but the adventurer can not move
 * The initial coordinates exist and the adventurer can move
+* Example of command : `bin/console app:play-game 0,3 SSEW -vvv`
 
 ## Use development environment :computer:
 
