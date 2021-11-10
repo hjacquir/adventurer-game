@@ -76,6 +76,16 @@ Example of command : `bin/console app:play-game 0,3 SSEW -vvv`
 
 You only need `make`, `docker` and `docker-compose` installed to start the development environment.
 
+### Stack
+
+* PHP 7.4 with Xdebug
+* Symfony 4.4
+* RabbitMQ
+* Adminer
+* PostgreSQL
+* COMING SOON : 
+  * Redis
+
 ### Start the development environment
 
 The following command will start the development environment.
