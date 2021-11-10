@@ -6,7 +6,7 @@ namespace App\Domain;
 
 use App\Domain\Model\GpsCoordinates;
 
-class LatitudeLineToGpsCoordinatesMapper
+class LatitudeLineToGpsCoordinates
 {
     public function map(LatitudeLine $latitudeLine): \Generator
     {

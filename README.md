@@ -2,15 +2,13 @@
 
 ## Description
 
-* An adventurer was venturing into a dangerous world, 
+An adventurer was venturing into a dangerous world, 
 making its way through the dark woods.
 
 ## Use case
 
-* It is about modeling the 
-movements of an adventurer on a map.
-* The map is modeled using characters in 
-a text file in UTF-8 format.
+* It is about modeling the movements of an adventurer on a map.
+* The map is modeled using characters in a text file in UTF-8 format.
 
 Example 
 ```
@@ -20,7 +18,7 @@ Example
 #      ##  ##      #
 ##                ##
 
-Legend :
+Legends :
 # impenetrable wood
 [] (space character): box where the adventurer can move
 ```
@@ -30,47 +28,49 @@ Requirements :
 * The adventurer cannot go beyond the edges of the map.
 * The adventurer cannot go to spaces occupied by impenetrable woods.
 
-## Stack requirements
-
-* PHP > 7.4
-* Docker installed
-* Make command installed
-
 ## Usage
 
-### Load file card into the database
+### Load file map into the database
 
 In this first step we record in database only the possible route from the map
 
-#### Extract Latitude Line from Card file
+#### Extract Latitude Line from map file
 
-* Enter in your shell (`make shell`) and launch the command : `bin/console app:extract-latitude card.txt` with the card file path
-  to verbose all log message add the options : `-vvv` like `bin/console app:extract-latitude card.txt -vvv`
-* The file is parsed line by line and each line is sent to RMQ queue : `latitude_line`
+* Enter in your shell (`make shell`) and launch the command : `bin/console app:extract-latitude [MAP_FILE_NAME.txt]` with the map file path
+to verbose all log message add the options : `-vvv` 
+like `bin/console app:extract-latitude map.txt -vvv`
+(The file is parsed line by line and each line is sent to 
+RMQ queue : `latitude_line`)
 * Connect to RMQ : http://localhost:15672/ with guest/guest
 
 #### Transform Latitude Line to Gps Coordinates
 
-* Enter in your shell (`make shell`) and consume message sent before : `bin/console messenger:consume latitude_line -vvv`
-* Each latitude line is mapped to a gps coordinate with latitude and longitude.
-  The gps coordinate is sent to RMQ queue : `gps_coordinates`
+* Enter in your shell (`make shell`) and consume message 
+sent before : `bin/console messenger:consume latitude_line -vvv`
+* Each latitude line is mapped to a gps coordinate with latitude and longitude. 
+(The gps coordinate is sent to RMQ queue : `gps_coordinates`)
 
 #### Load Gps Coordinates into Database
 
-* Enter in your shell (`make shell`) and consume message sent before : `bin/console messenger:consume gps_coordinates -vvv`
-* Each gps coordinates are loaded into the pgsql database.
+* Enter in your shell (`make shell`) and consume message sent before : 
+`bin/console messenger:consume gps_coordinates -vvv`
+(Each gps coordinates are loaded into the pgsql database)
+
 * To connect on the database with adminer :
   * url : http://localhost:8080
   * credentials : postgres - user - password - adventurer
 
 ### Playing game
 
-Enter in your shell (`make shell`) and launch the command : `bin/console app:play-game [INITIAL_COORDINATES] [MOVING_SEQUENCE] -vvv`
+* Enter in your shell (`make shell`) and launch the command : 
+`bin/console app:play-game [INITIAL_COORDINATES] [MOVING_SEQUENCE] -vvv`
+
 You have three behaviours :
 * The initial coordinates do not exist
 * The initial coordinates exist but the adventurer can not move
 * The initial coordinates exist and the adventurer can move
-* Example of command : `bin/console app:play-game 0,3 SSEW -vvv`
+
+Example of command : `bin/console app:play-game 0,3 SSEW -vvv`
 
 ## Use development environment :computer:
 

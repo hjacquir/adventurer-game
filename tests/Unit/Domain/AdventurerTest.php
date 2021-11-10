@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Domain;
 
 use App\Domain\Adventurer;
-use App\Domain\Card;
+use App\Domain\Map;
 use App\Domain\Model\GpsCoordinates;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +21,7 @@ class AdventurerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->card = $this->createMock(Card::class);
+        $this->card = $this->createMock(Map::class);
         $this->gpsCoordinates = $this->createMock(GpsCoordinates::class);
 
         $this->currentTested = new Adventurer($this->card, $this->gpsCoordinates);
@@ -78,7 +78,7 @@ class AdventurerTest extends TestCase
                 // expected
                 false
             ],
-            'gps coordinates are positive and < max card coordinates' => [
+            'gps coordinates are positive and < max map coordinates' => [
                 // latitude
                 1,
                 // longitude
@@ -90,7 +90,7 @@ class AdventurerTest extends TestCase
                 // expected
                 true
             ],
-            'gps coordinates are positive and = max card coordinates' => [
+            'gps coordinates are positive and = max map coordinates' => [
                 // latitude
                 10,
                 // longitude
@@ -102,7 +102,7 @@ class AdventurerTest extends TestCase
                 // expected
                 true
             ],
-            'gps coordinates = 0 and < max card coordinates' => [
+            'gps coordinates = 0 and < max map coordinates' => [
                 // latitude
                 0,
                 // longitude
@@ -120,7 +120,7 @@ class AdventurerTest extends TestCase
     /**
      * @dataProvider provideDataForCanMoveFrom
      */
-    public function testCanMoveFromShouldReturnFalseWhenCoordinatesLatitudeIsNegative(
+    public function testCanMoveFrom(
       int $latitude,
       int $longitude,
       int $maxLatitude,

@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace App\Infrastructure\Messenger\Handler;
 
 use App\Domain\LatitudeLine;
-use App\Domain\LatitudeLineToGpsCoordinatesMapper;
+use App\Domain\LatitudeLineToGpsCoordinates;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class MapLatitudeLineToGpsCoordinates implements MessageHandlerInterface
+class TransformLatitudeLineToGpsCoordinates implements MessageHandlerInterface
 {
-    private LatitudeLineToGpsCoordinatesMapper $mapper;
+    private LatitudeLineToGpsCoordinates $mapper;
     private MessageBusInterface $bus;
 
     /**
-     * @param LatitudeLineToGpsCoordinatesMapper $mapper
+     * @param LatitudeLineToGpsCoordinates $mapper
      * @param MessageBusInterface $bus
      */
-    public function __construct(LatitudeLineToGpsCoordinatesMapper $mapper, MessageBusInterface $bus)
+    public function __construct(LatitudeLineToGpsCoordinates $mapper, MessageBusInterface $bus)
     {
         $this->mapper = $mapper;
         $this->bus = $bus;

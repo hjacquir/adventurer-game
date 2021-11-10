@@ -8,17 +8,17 @@ use App\Domain\Model\GpsCoordinates;
 
 class Adventurer
 {
-    private Card $card;
+    private Map $map;
     private GpsCoordinates $initialCoordinates;
     private GpsCoordinates $finalCoordinates;
 
     /**
-     * @param Card $card
+     * @param Map $map
      * @param GpsCoordinates $initialCoordinates
      */
-    public function __construct(Card $card, GpsCoordinates $initialCoordinates)
+    public function __construct(Map $map, GpsCoordinates $initialCoordinates)
     {
-        $this->card = $card;
+        $this->map = $map;
         $this->initialCoordinates = $initialCoordinates;
         // we consider that on init : initial and final coordinates are same
         $this->finalCoordinates = $initialCoordinates;
@@ -28,8 +28,8 @@ class Adventurer
     {
         return $gpsCoordinates->getLatitude() >= 0
             && $gpsCoordinates->getLongitude() >= 0
-            && $gpsCoordinates->getLatitude() <= $this->card->getMaxLatitude()
-            && $gpsCoordinates->getLongitude() <= $this->card->getMaxLongitude();
+            && $gpsCoordinates->getLatitude() <= $this->map->getMaxLatitude()
+            && $gpsCoordinates->getLongitude() <= $this->map->getMaxLongitude();
     }
 
     public function getInitialCoordinates(): GpsCoordinates

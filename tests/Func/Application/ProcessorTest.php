@@ -6,7 +6,7 @@ namespace App\Tests\Func\Application;
 
 use App\Application\Processor;
 use App\Domain\Adventurer;
-use App\Domain\Card;
+use App\Domain\Map;
 use App\Domain\Model\GpsCoordinates;
 use App\Domain\Movement\GoEast;
 use App\Domain\Movement\GoNorth;
@@ -53,7 +53,7 @@ class ProcessorTest extends KernelTestCase
         );
 
         $adventurer = new Adventurer(
-            new Card($this->gpsCoordinatesRepository),
+            new Map($this->gpsCoordinatesRepository),
             $initialCoordinates
         );
 
@@ -107,7 +107,7 @@ class ProcessorTest extends KernelTestCase
                 // moved is empty
                 []
             ],
-            'initial coordinates found and moving with moving sequence exactly same as card' => [
+            'initial coordinates found and moving with moving sequence exactly same as map' => [
                 new GpsCoordinates(1, 0),
                 [
                     'S',
@@ -127,7 +127,7 @@ class ProcessorTest extends KernelTestCase
                     '2,2',
                 ]
             ],
-            'initial coordinates found and moving with moving sequence > as card' => [
+            'initial coordinates found and moving with moving sequence > as map' => [
                 new GpsCoordinates(1, 0),
                 [
                     'S',
@@ -149,7 +149,7 @@ class ProcessorTest extends KernelTestCase
                     '2,2',
                 ]
             ],
-            'initial coordinates found and moving with moving sequence < as card' => [
+            'initial coordinates found and moving with moving sequence < as map' => [
                 new GpsCoordinates(1, 0),
                 [
                     'S',

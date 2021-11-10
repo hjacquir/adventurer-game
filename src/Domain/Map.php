@@ -6,7 +6,7 @@ namespace App\Domain;
 
 use App\Domain\Repository\GpsCoordinatesRepositoryInterface;
 
-class Card
+class Map
 {
     private ?int $maxLatitude = null;
     private ?int $maxLongitude = null;

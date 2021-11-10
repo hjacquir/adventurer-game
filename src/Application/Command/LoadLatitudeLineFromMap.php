@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class LoadLatitudeLineFromCard extends Command
+class LoadLatitudeLineFromMap extends Command
 {
     public const COMMAND_ARGUMENT_CARD_FILE_PATH = 'file';
     private const COMMAND_FINISHED_WITH_SUCCESS = 0;

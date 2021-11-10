@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Func\Application\Command;
 
-use App\Application\Command\LoadLatitudeLineFromCard;
+use App\Application\Command\LoadLatitudeLineFromMap;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -12,7 +12,7 @@ use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\TraceableMessageBus;
 
 /**
- * @covers \App\Application\Command\LoadLatitudeLineFromCard
+ * @covers \App\Application\Command\LoadLatitudeLineFromMap
  */
 class LoadLatitudeLineFromCardTest extends TestCase
 {
@@ -20,7 +20,7 @@ class LoadLatitudeLineFromCardTest extends TestCase
     {
         // we use a traceable bus message to assert that dispatched message are as expected
         $bus = new TraceableMessageBus(new MessageBus());
-        $currentTested = new LoadLatitudeLineFromCard(
+        $currentTested = new LoadLatitudeLineFromMap(
             new Logger('test'),
             $bus
         );
@@ -28,7 +28,7 @@ class LoadLatitudeLineFromCardTest extends TestCase
         $commandTester = new CommandTester($currentTested);
         $commandTester->execute(
             [
-                LoadLatitudeLineFromCard::COMMAND_ARGUMENT_CARD_FILE_PATH => __DIR__ . '/card.txt',
+                LoadLatitudeLineFromMap::COMMAND_ARGUMENT_CARD_FILE_PATH => __DIR__ . '/card.txt',
             ]
         );
         $messages = $bus->getDispatchedMessages();

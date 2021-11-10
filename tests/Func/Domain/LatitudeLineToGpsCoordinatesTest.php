@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace App\Tests\Func\Domain;
 
 use App\Domain\LatitudeLine;
-use App\Domain\LatitudeLineToGpsCoordinatesMapper;
+use App\Domain\LatitudeLineToGpsCoordinates;
 use App\Domain\Model\GpsCoordinates;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @cover LatitudeLineToGpsCoordinatesMapper
  */
-class LatitudeLineToGpsCoordinatesMapperTest extends TestCase
+class LatitudeLineToGpsCoordinatesTest extends TestCase
 {
     public function testMap()
     {
-       $currentTested = new LatitudeLineToGpsCoordinatesMapper();
+       $currentTested = new LatitudeLineToGpsCoordinates();
        $latitudeLine = new LatitudeLine(
           "# % ",
           0

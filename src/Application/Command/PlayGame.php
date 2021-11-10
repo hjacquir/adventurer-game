@@ -6,7 +6,7 @@ namespace App\Application\Command;
 
 use App\Application\Processor;
 use App\Domain\Adventurer;
-use App\Domain\Card;
+use App\Domain\Map;
 use App\Domain\Model\GpsCoordinates;
 use App\Domain\Movement\GoEast;
 use App\Domain\Movement\GoNorth;
@@ -24,7 +24,6 @@ class PlayGame extends Command
     public const COMMAND_ARGUMENT_INITIAL_COORDINATES = 'initial-coordinates';
     public const COMMAND_ARGUMENT_INITIAL_MOVE_SEQUENCE = 'move-sequence';
     private const COMMAND_FINISHED_WITH_SUCCESS = 0;
-    private const COMMAND_FINISHED_WITH_FAILURE = 1;
     protected static $defaultName = 'app:play-game';
     private LoggerInterface $logger;
     private GpsCoordinatesRepositoryInterface $gpsCoordinatesRepository;
@@ -69,7 +68,7 @@ class PlayGame extends Command
         $directions = str_split($movingSequence);
 
         $adventurer = new Adventurer(
-            new Card($this->gpsCoordinatesRepository),
+            new Map($this->gpsCoordinatesRepository),
             new GpsCoordinates($latitude, $longitude)
         );
 
