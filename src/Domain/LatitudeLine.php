@@ -28,4 +28,20 @@ class LatitudeLine
     {
         return $this->latitude;
     }
+
+    /**
+     * @param string $line
+     */
+    public function setLine(string $line): void
+    {
+        $this->line = $line;
+    }
+
+    /**
+     * @param int $latitude
+     */
+    public function setLatitude(int $latitude): void
+    {
+        $this->latitude = $latitude;
+    }
 }
