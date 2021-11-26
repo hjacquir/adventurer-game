@@ -72,19 +72,35 @@ You have three behaviours :
 
 Example of command : `bin/console app:play-game 0,3 SSEW -vvv`
 
+## Stack
+
+* PHP 7.4 with Xdebug
+* Symfony 4.4 with Profiler Pack (symfony/profiler-pack)
+* RabbitMQ 3.6
+* Adminer 4.7
+* PostgreSQL 13
+* Redis
+
+### Connect to RMQ
+
+* url : http://localhost:15672
+* id/mdp : guest/guest
+
+### Connect to Adminer
+
+* url : http://localhost:8080/
+* server : postgres
+* username : user
+* password: password
+* database : adventurer
+
+### Connect to redis container
+
+`docker exec -it adventurer-redis sh` and `redis-cli`
+
 ## Use development environment :computer:
 
 You only need `make`, `docker` and `docker-compose` installed to start the development environment.
-
-### Stack
-
-* PHP 7.4 with Xdebug
-* Symfony 4.4
-* RabbitMQ
-* Adminer
-* PostgreSQL
-* COMING SOON : 
-  * Redis
 
 ### Start the development environment
 
