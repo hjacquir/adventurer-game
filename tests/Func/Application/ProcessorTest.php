@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Func\Application;
 
+use App\Application\Exception\ValueNotAllowedException;
 use App\Application\Processor;
 use App\Domain\Adventurer;
 use App\Domain\GpsCoordinatesMapper;
@@ -37,7 +38,7 @@ class ProcessorTest extends KernelTestCase
      */
     public function testProcessReturnAnEmptyArrayWhenMovementAreEmpty(
         GpsCoordinates $initialCoordinates,
-        array $directions,
+        string $movingSequences,
         array $movements,
         array $expectedMoved
     ): void {
@@ -49,7 +50,7 @@ class ProcessorTest extends KernelTestCase
 
         $currentTested = new Processor(
             $this->gpsCoordinatesRepository,
-            $directions,
+            $movingSequences,
             $movements,
             new GpsCoordinatesMapper()
         );
@@ -64,42 +65,60 @@ class ProcessorTest extends KernelTestCase
         $this->assertSame($expectedMoved, $moved);
     }
 
+    public function provideNotAllowedMovingSequences(): array
+    {
+        return [
+          [
+              ""
+          ],
+          [
+              'n'
+          ],
+          [
+              'bla',
+          ]
+        ];
+    }
+
+    /**
+     * @throws ValueNotAllowedException
+     * @dataProvider provideNotAllowedMovingSequences
+     */
+    public function testProcessThrowAnExceptionWhenMovingSequencesIsNotAllowed(string $movingSequences)
+    {
+        $currentTested = new Processor(
+            $this->gpsCoordinatesRepository,
+            $movingSequences,
+            [],
+            new GpsCoordinatesMapper()
+        );
+
+        $adventurer = new Adventurer(
+            new Map($this->gpsCoordinatesRepository),
+            new GpsCoordinates(1,2)
+        );
+
+        $this->expectException(ValueNotAllowedException::class);
+
+        $currentTested->process($adventurer);
+    }
+
     /**
      * @return \array[][]
      */
     public function provideDataForProcess()
     {
         return [
-            'direction and movement are empty' => [
-                new GpsCoordinates(1, 0),
-                [],
-                [],
-                // moved is empty
-                []
-            ],
-            'direction is empty' => [
-                new GpsCoordinates(1, 0),
-                [],
-                [
-                    new GoWest(),
-                ],
-                // moved is empty
-                []
-            ],
             'movement is empty' => [
                 new GpsCoordinates(1, 0),
-                [
-                    'S',
-                ],
+                "S",
                 [],
                 // moving is empty
                 []
             ],
             'initial coordinates not found' => [
                 new GpsCoordinates(10, 0),
-                [
-                    'S',
-                ],
+                "S",
                 [
                     new GoWest(),
                     new GoEast(),
@@ -111,11 +130,7 @@ class ProcessorTest extends KernelTestCase
             ],
             'initial coordinates found and moving with moving sequence exactly same as map' => [
                 new GpsCoordinates(1, 0),
-                [
-                    'S',
-                    'E',
-                    'E',
-                ],
+                "SEE",
                 [
                     new GoWest(),
                     new GoEast(),
@@ -131,13 +146,7 @@ class ProcessorTest extends KernelTestCase
             ],
             'initial coordinates found and moving with moving sequence > as map' => [
                 new GpsCoordinates(1, 0),
-                [
-                    'S',
-                    'E',
-                    'E',
-                    'E',
-                    'N',
-                ],
+                "SEEEN",
                 [
                     new GoWest(),
                     new GoEast(),
@@ -153,9 +162,7 @@ class ProcessorTest extends KernelTestCase
             ],
             'initial coordinates found and moving with moving sequence < as map' => [
                 new GpsCoordinates(1, 0),
-                [
-                    'S',
-                ],
+                "S",
                 [
                     new GoWest(),
                     new GoEast(),

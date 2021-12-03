@@ -10,7 +10,7 @@ class GoNorth implements Movement
 {
     public function isApplicable(string $currentDirection): bool
     {
-        return $currentDirection === 'N';
+        return $currentDirection === Movement::NORTH;
     }
 
     public function move(Adventurer $adventurer)

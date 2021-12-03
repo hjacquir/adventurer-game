@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Command;
 
+use App\Application\Exception\ValueNotAllowedException;
 use App\Application\Processor;
 use App\Domain\Adventurer;
 use App\Domain\GpsCoordinatesMapper;
@@ -24,6 +25,7 @@ class PlayGame extends Command
     public const COMMAND_ARGUMENT_INITIAL_COORDINATES = 'initial-coordinates';
     public const COMMAND_ARGUMENT_INITIAL_MOVE_SEQUENCE = 'move-sequence';
     private const COMMAND_FINISHED_WITH_SUCCESS = 0;
+    private const COMMAND_FINISHED_WITH_FAILURE = 1;
     protected static $defaultName = 'app:play-game';
     private LoggerInterface $logger;
     private GpsCoordinatesRepositoryInterface $gpsCoordinatesRepository;
@@ -61,10 +63,7 @@ class PlayGame extends Command
         $initialCoordinatesAsString = $input->getArgument(self::COMMAND_ARGUMENT_INITIAL_COORDINATES);
         $initialGpsCoordinates = $this->gpsCoordinatesMapper->fromString($initialCoordinatesAsString);
 
-        // todo add input validation : only authorize value : N E S W
         $movingSequence = $input->getArgument(self::COMMAND_ARGUMENT_INITIAL_MOVE_SEQUENCE);
-        // todo encapsulate into an object : use a collection in place of an array
-        $directions = str_split($movingSequence);
 
         $adventurer = new Adventurer(
             new Map($this->gpsCoordinatesRepository),
@@ -73,8 +72,7 @@ class PlayGame extends Command
 
         $processor = new Processor(
             $this->gpsCoordinatesRepository,
-            $directions,
-            // todo encapsulate into an object : use a collection in place of an array
+            $movingSequence,
             [
                 new GoWest(),
                 new GoEast(),
@@ -84,20 +82,26 @@ class PlayGame extends Command
             $this->gpsCoordinatesMapper
         );
 
-        $moved = $processor->process($adventurer);
+        try {
+            $moved = $processor->process($adventurer);
 
-        if (false === empty($moved)) {
-            foreach ($moved as $item) {
-                $this->logger->info("Moved to : {$item}");
+            if (false === empty($moved)) {
+                foreach ($moved as $item) {
+                    $this->logger->info("Moved to : {$item}");
+                }
+
+                $this->logger->info("Game finished. Bye !");
+                return self::COMMAND_FINISHED_WITH_SUCCESS;
             }
 
-            $this->logger->info("Game finished. Bye !");
+            $this->logger->notice('The adventurer can not move from his initial position ' .
+                'OR the initial position that you given does not exist. Game aborted. Bye !');
+
             return self::COMMAND_FINISHED_WITH_SUCCESS;
+        } catch (ValueNotAllowedException $e) {
+            $this->logger->error($e->getMessage());
+
+            return self::COMMAND_FINISHED_WITH_FAILURE;
         }
-
-        $this->logger->notice('The adventurer can not move from his initial position ' .
-        'OR the initial position that you given does not exist. Game aborted. Bye !');
-
-        return self::COMMAND_FINISHED_WITH_SUCCESS;
     }
 }

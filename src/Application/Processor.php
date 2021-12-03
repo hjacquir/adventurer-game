@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application;
 
+use App\Application\Exception\ValueNotAllowedException;
 use App\Domain\Adventurer;
 use App\Domain\GpsCoordinatesMapper;
 use App\Domain\Movement\Movement;
@@ -13,30 +14,32 @@ class Processor
 {
     private GpsCoordinatesRepositoryInterface $gpsCoordinatesRepository;
     private array $moved = [];
-    private array $directions = [];
+    private string $movingSequences = "";
     private array $movements = [];
     private GpsCoordinatesMapper $gpsCoordinatesMapper;
 
-    /**
-     * @param GpsCoordinatesRepositoryInterface $gpsCoordinatesRepository
-     * @param array $directions
-     * @param array $movements
-     */
     public function __construct(
         GpsCoordinatesRepositoryInterface $gpsCoordinatesRepository,
-        array $directions,
+        string $movingSequences,
         array $movements,
         GpsCoordinatesMapper $gpsCoordinatesMapper
     ) {
         $this->gpsCoordinatesRepository = $gpsCoordinatesRepository;
-        $this->directions = $directions;
         $this->movements = $movements;
         $this->gpsCoordinatesMapper = $gpsCoordinatesMapper;
+        $this->movingSequences = $movingSequences;
     }
 
+    /**
+     * @param Adventurer $adventurer
+     * @return array
+     * @throws ValueNotAllowedException
+     */
     public function process(Adventurer $adventurer): array
     {
-        foreach ($this->directions as $direction) {
+        $directions = $this->buildDirections($this->movingSequences);
+
+        foreach ($directions as $direction) {
 
             if (true === empty($this->movements)) {
                 return [];
@@ -69,5 +72,35 @@ class Processor
         }
 
         return $this->moved;
+    }
+
+    /**
+     * @param string $movingSequences
+     * @return array|false
+     * @throws ValueNotAllowedException
+     */
+    private function buildDirections(string $movingSequences)
+    {
+        $directions = str_split($movingSequences);
+
+        $this->assertAllowedValuesForDirections($directions);
+
+        return $directions;
+    }
+
+    private function assertAllowedValuesForDirections(array $directions)
+    {
+        $allowedValues = [
+            Movement::WEST,
+            Movement::SOUTH,
+            Movement::NORTH,
+            Movement::EAST,
+        ];
+
+        foreach ($directions as $direction) {
+            if (false === in_array($direction, $allowedValues)) {
+                throw new ValueNotAllowedException("The value {$direction} is not allowed for direction");
+            }
+        }
     }
 }
