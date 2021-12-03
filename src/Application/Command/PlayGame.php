@@ -58,10 +58,8 @@ class PlayGame extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // todo add input validation : check format with comma separated
         $initialCoordinatesAsString = $input->getArgument(self::COMMAND_ARGUMENT_INITIAL_COORDINATES);
-        $initialGpsCoordinates = $this->gpsCoordinatesMapper
-            ->fromString($initialCoordinatesAsString);
+        $initialGpsCoordinates = $this->gpsCoordinatesMapper->fromString($initialCoordinatesAsString);
 
         // todo add input validation : only authorize value : N E S W
         $movingSequence = $input->getArgument(self::COMMAND_ARGUMENT_INITIAL_MOVE_SEQUENCE);
