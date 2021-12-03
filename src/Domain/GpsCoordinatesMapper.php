@@ -14,10 +14,7 @@ class GpsCoordinatesMapper
 
         // string is empty, or other -> we return an 0,0 gps coordinates
         if (count($explodedCoordinates) === 1) {
-            $latitude = 0;
-            $longitude = 0;
-
-            return new GpsCoordinates($latitude, $longitude);
+            return new GpsCoordinates(0, 0);
         }
 
         $latitude = (int) $explodedCoordinates[0];
