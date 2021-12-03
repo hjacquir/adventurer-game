@@ -28,8 +28,8 @@ class GpsCoordinatesMapper
 
     public function toString(GpsCoordinates $gpsCoordinates): string
     {
-        return $gpsCoordinates->getLatitude() .
-            self::SEPARATOR .
-            $gpsCoordinates->getLongitude();
+        return $gpsCoordinates->getLatitude()
+            . self::SEPARATOR
+            . $gpsCoordinates->getLongitude();
     }
 }
