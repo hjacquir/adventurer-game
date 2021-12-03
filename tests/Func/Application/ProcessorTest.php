@@ -6,6 +6,7 @@ namespace App\Tests\Func\Application;
 
 use App\Application\Processor;
 use App\Domain\Adventurer;
+use App\Domain\GpsCoordinatesMapper;
 use App\Domain\Map;
 use App\Domain\Model\GpsCoordinates;
 use App\Domain\Movement\GoEast;
@@ -49,7 +50,8 @@ class ProcessorTest extends KernelTestCase
         $currentTested = new Processor(
             $this->gpsCoordinatesRepository,
             $directions,
-            $movements
+            $movements,
+            new GpsCoordinatesMapper()
         );
 
         $adventurer = new Adventurer(

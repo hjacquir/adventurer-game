@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Application;
 
 use App\Domain\Adventurer;
+use App\Domain\GpsCoordinatesMapper;
 use App\Domain\Movement\Movement;
 use App\Domain\Repository\GpsCoordinatesRepositoryInterface;
 
@@ -14,6 +15,7 @@ class Processor
     private array $moved = [];
     private array $directions = [];
     private array $movements = [];
+    private GpsCoordinatesMapper $gpsCoordinatesMapper;
 
     /**
      * @param GpsCoordinatesRepositoryInterface $gpsCoordinatesRepository
@@ -23,11 +25,13 @@ class Processor
     public function __construct(
         GpsCoordinatesRepositoryInterface $gpsCoordinatesRepository,
         array $directions,
-        array $movements
+        array $movements,
+        GpsCoordinatesMapper $gpsCoordinatesMapper
     ) {
         $this->gpsCoordinatesRepository = $gpsCoordinatesRepository;
         $this->directions = $directions;
         $this->movements = $movements;
+        $this->gpsCoordinatesMapper = $gpsCoordinatesMapper;
     }
 
     public function process(Adventurer $adventurer): array
@@ -45,12 +49,14 @@ class Processor
                 }
             }
 
-            if (false === $adventurer->canMoveFrom($adventurer->getFinalCoordinates())) {
+            $adventurerFinalCoordinates = $adventurer->getFinalCoordinates();
+
+            if (false === $adventurer->canMoveFrom($adventurerFinalCoordinates)) {
                 return $this->moved;
             }
 
-            $currentLatitude = $adventurer->getFinalCoordinates()->getLatitude();
-            $currentLongitude = $adventurer->getFinalCoordinates()->getLongitude();
+            $currentLatitude = $adventurerFinalCoordinates->getLatitude();
+            $currentLongitude = $adventurerFinalCoordinates->getLongitude();
 
             $nextMove = $this->gpsCoordinatesRepository
                 ->findOneByLatitudeAndLongitude($currentLatitude, $currentLongitude);
@@ -59,7 +65,7 @@ class Processor
                 return $this->moved;
             }
 
-            array_push($this->moved, "{$currentLatitude},{$currentLongitude}");
+            array_push($this->moved, $this->gpsCoordinatesMapper->toString($adventurerFinalCoordinates));
         }
 
         return $this->moved;

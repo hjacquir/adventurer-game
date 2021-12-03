@@ -65,12 +65,23 @@ sent before : `bin/console messenger:consume latitude_line -vvv`
 * Enter in your shell (`make shell`) and launch the command : 
 `bin/console app:play-game [INITIAL_COORDINATES] [MOVING_SEQUENCE] -vvv`
 
+Arguments :
+
+[INITIAL_COORDINATES] : latitude,longitude (eg : 3,0)
+If you enter initial coordinates which not the pattern below the initial coordinates 
+are 0,0. For example an empty string, or a string without comma etc ...
+
+[MOVING_SEQUENCE] : the coordinates directions N, S, E, and W (eg : SSSWWEE)
+
+-vvv : to verbose 
+
 You have three behaviours :
 * The initial coordinates do not exist
 * The initial coordinates exist but the adventurer can not move
 * The initial coordinates exist and the adventurer can move
 
 Example of command : `bin/console app:play-game 0,3 SSEW -vvv`
+
 
 ## Stack
 

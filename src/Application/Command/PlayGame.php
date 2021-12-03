@@ -6,8 +6,8 @@ namespace App\Application\Command;
 
 use App\Application\Processor;
 use App\Domain\Adventurer;
+use App\Domain\GpsCoordinatesMapper;
 use App\Domain\Map;
-use App\Domain\Model\GpsCoordinates;
 use App\Domain\Movement\GoEast;
 use App\Domain\Movement\GoNorth;
 use App\Domain\Movement\GoSouth;
@@ -27,15 +27,18 @@ class PlayGame extends Command
     protected static $defaultName = 'app:play-game';
     private LoggerInterface $logger;
     private GpsCoordinatesRepositoryInterface $gpsCoordinatesRepository;
+    private GpsCoordinatesMapper $gpsCoordinatesMapper;
 
     public function __construct(
         GpsCoordinatesRepositoryInterface $gpsCoordinatesRepository,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        GpsCoordinatesMapper $gpsCoordinatesMapper
     ) {
         parent::__construct();
 
         $this->gpsCoordinatesRepository = $gpsCoordinatesRepository;
         $this->logger = $logger;
+        $this->gpsCoordinatesMapper = $gpsCoordinatesMapper;
     }
 
     protected function configure()
@@ -56,11 +59,9 @@ class PlayGame extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // todo add input validation : check format with comma separated
-        $initialCoordinates = $input->getArgument(self::COMMAND_ARGUMENT_INITIAL_COORDINATES);
-        $explodedCoordinates = explode(',', $initialCoordinates);
-
-        $latitude = (int) $explodedCoordinates[0];
-        $longitude = (int) $explodedCoordinates[1];
+        $initialCoordinatesAsString = $input->getArgument(self::COMMAND_ARGUMENT_INITIAL_COORDINATES);
+        $initialGpsCoordinates = $this->gpsCoordinatesMapper
+            ->fromString($initialCoordinatesAsString);
 
         // todo add input validation : only authorize value : N E S W
         $movingSequence = $input->getArgument(self::COMMAND_ARGUMENT_INITIAL_MOVE_SEQUENCE);
@@ -69,7 +70,7 @@ class PlayGame extends Command
 
         $adventurer = new Adventurer(
             new Map($this->gpsCoordinatesRepository),
-            new GpsCoordinates($latitude, $longitude)
+            $initialGpsCoordinates
         );
 
         $processor = new Processor(
@@ -81,7 +82,8 @@ class PlayGame extends Command
                 new GoEast(),
                 new GoNorth(),
                 new GoSouth()
-            ]
+            ],
+            $this->gpsCoordinatesMapper
         );
 
         $moved = $processor->process($adventurer);
